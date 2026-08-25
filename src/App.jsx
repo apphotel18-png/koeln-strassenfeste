@@ -66,9 +66,10 @@ const CATS = {
 };
 
 const EVENTS = [
-  { id: 'e1', date: '2026-08-28', endDate: '2026-08-30', cat: 'strassenfest',
+  { id: 'e1', date: '2026-08-28', endDate: '2026-08-30', cat: 'strassenfest', img: '/images/rot-weisses-strassenfest.jpg',
+    startTime: '16:00 Uhr', endTime: '16:00 Uhr',
     name: { de: 'Rot-Weißes Straßenfest', en: 'Rot-Weißes Straßenfest', es: 'Rot-Weißes Straßenfest' },
-    loc: 'Porz-Wahn', source: 'koeln.de' },
+    loc: 'Porz-Wahn', address: 'Wahn-Kirche, Frankfurter Str. 177, 51147 Köln', source: 'koeln.de' },
   { id: 'e2', date: '2026-08-29', endDate: '2026-08-30', cat: 'gamescom',
     name: { de: 'Gamescom City Festival', en: 'Gamescom City Festival', es: 'Gamescom City Festival' },
     loc: 'Hohenzollernring, Rudolfplatz', source: 'citynews-koeln.de' },
@@ -179,9 +180,9 @@ const STATIONS = {
   friesenplatz: { label: 'Friesenplatz', query: 'Friesenplatz, Köln' },
 };
 
-function mapsUrl(fromQuery, loc) {
+function mapsUrl(fromQuery, destQuery) {
   const origin = encodeURIComponent(fromQuery);
-  const destination = encodeURIComponent(loc + ', Köln');
+  const destination = encodeURIComponent(destQuery.includes('Köln') ? destQuery : destQuery + ', Köln');
   return `https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${destination}&travelmode=transit`;
 }
 
@@ -199,11 +200,13 @@ function formatDate(ev, lang) {
   const opts = { day: '2-digit', month: 'short' };
   const locale = lang === 'de' ? 'de-DE' : lang === 'es' ? 'es-ES' : 'en-GB';
   const start = new Date(ev.date + 'T00:00:00').toLocaleDateString(locale, opts);
+  const startT = ev.startTime ? `, ${ev.startTime}` : '';
+  const endT = ev.endTime ? `, ${ev.endTime}` : '';
   if (ev.endDate && ev.endDate !== ev.date) {
     const end = new Date(ev.endDate + 'T00:00:00').toLocaleDateString(locale, opts);
-    return `${start} – ${end}`;
+    return `${start}${startT} – ${end}${endT}`;
   }
-  return start;
+  return `${start}${startT}`;
 }
 
 export default function App() {
@@ -300,13 +303,18 @@ export default function App() {
                     </div>
                   </div>
                   <div style={{ fontSize: 21, fontWeight: 700, color: '#22201C', lineHeight: 1.15, marginBottom: 5 }}>{ev.name[lang]}</div>
-                  <div style={{ fontSize: 14, color: '#8a8378', marginBottom: 8 }}>{ev.loc} · {formatDate(ev, lang)}</div>
+                  <div style={{ fontSize: 14, color: '#8a8378', marginBottom: ev.address ? 2 : 8 }}>{ev.loc} · {formatDate(ev, lang)}</div>
+                  {ev.address && (
+                    <div style={{ fontSize: 13, color: '#8a8378', marginBottom: 8, display: 'flex', alignItems: 'flex-start', gap: 4 }}>
+                      <span>📍</span><span>{ev.address}</span>
+                    </div>
+                  )}
                   <div style={{ fontSize: 14.5, color: '#57534e', lineHeight: 1.5, marginBottom: 10 }}>{cat.desc[lang]}</div>
                   {ev.caption && (
                     <div style={{ fontSize: 13.5, color: '#8a8378', marginBottom: 10, lineHeight: 1.45, fontStyle: 'italic' }}>{ev.caption[lang]}</div>
                   )}
                   {!ev.isPast && (
-                    <a href={mapsUrl(STATIONS[fromStation].query, ev.loc)} target="_blank" rel="noopener noreferrer"
+                    <a href={mapsUrl(STATIONS[fromStation].query, ev.address || ev.loc)} target="_blank" rel="noopener noreferrer"
                       style={{ display: 'inline-block', fontSize: 13.5, fontWeight: 700, color: '#1F4E5C', textDecoration: 'none', border: '1.5px solid #c8d4d8', borderRadius: 12, padding: '6px 12px' }}>
                       🚋 {t.route} {STATIONS[fromStation].label} →
                     </a>
