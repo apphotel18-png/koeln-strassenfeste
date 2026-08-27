@@ -1068,13 +1068,168 @@ function inRange(ev, days) {
   return start <= rangeEnd && end >= TODAY;
 }
 
+
+function seedFromId(id) {
+  let h = 0;
+  for (let i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) >>> 0;
+  return h;
+}
+
+function CategoryArt({ cat, catKey, eventId }) {
+  const bg = cat.chip;
+  const fg = cat.stripe;
+  const dark = cat.text;
+  const common = { width: '100%', height: '100%', viewBox: '0 0 400 170', preserveAspectRatio: 'xMidYMid slice' };
+  const seed = seedFromId(eventId || 'x');
+  const rnd = (n, salt) => ((seed + salt * 97) % n);
+
+  // Diseño unico especial para el 11-11 (apertura de temporada de carnaval)
+  if (eventId === 'e8') {
+    return (
+      <svg {...common}>
+        <rect width="400" height="170" fill={dark} />
+        <text x="200" y="100" textAnchor="middle" fontSize="86" fontWeight="700" fill={fg} fontFamily="Georgia, serif" opacity="0.95">11:11</text>
+        {[[50,30],[350,140],[70,140],[330,30],[200,20],[20,90],[380,90]].map((p,i) => (
+          <rect key={i} x={p[0]} y={p[1]} width="7" height="7" fill={fg} opacity="0.5" transform={`rotate(${i*51} ${p[0]} ${p[1]})`} />
+        ))}
+      </svg>
+    );
+  }
+
+  if (catKey === 'strassenfest' || catKey === 'kirmes') {
+    const flagCount = 7 + (rnd(4, 1));
+    const spacing = 400 / (flagCount + 1);
+    const rowOffset = rnd(2, 3);
+    return (
+      <svg {...common}>
+        <rect width="400" height="170" fill={bg} />
+        <polyline points={Array.from({length: flagCount+1}).map((_,i) => `${i*spacing},${(i+rowOffset)%2? 50:28}`).join(' ')} fill="none" stroke={fg} strokeWidth="2.5" opacity="0.55" />
+        {Array.from({length: flagCount}).map((_,i) => {
+          const x = (i+1)*spacing;
+          const y = (i+rowOffset)%2? 50:28;
+          return <polygon key={i} points={`${x-13},${y} ${x+13},${y} ${x},${y+22}`} fill={fg} opacity={i%2? 0.9: 0.65} />;
+        })}
+        <polygon points="60,170 60,120 130,110 130,170" fill={dark} opacity="0.18" />
+        <polygon points="60,120 130,110 95,90" fill={fg} opacity="0.55" />
+        <polygon points="270,170 270,125 335,113 335,170" fill={dark} opacity="0.18" />
+        <polygon points="270,125 335,113 302,95" fill={fg} opacity="0.55" />
+        <circle cx={190+rnd(30,5)} cy="140" r="3" fill={fg} opacity="0.5" />
+        <circle cx={210+rnd(30,7)} cy="150" r="2.5" fill={fg} opacity="0.4" />
+        <circle cx={170+rnd(30,9)} cy="155" r="2" fill={fg} opacity="0.4" />
+      </svg>
+    );
+  }
+
+  if (catKey === 'weihnacht') {
+    const starPos = [[70,140],[330,120],[120,40],[280,55],[200,30],[40,90],[360,90]];
+    return (
+      <svg {...common}>
+        <rect width="400" height="170" fill={bg} />
+        {starPos.map((s,i) => {
+          const x = s[0] + rnd(16, i) - 8;
+          const y = s[1] + rnd(12, i+4) - 6;
+          const o = 0.28 + (rnd(25, i+8)/100);
+          return <polygon key={i} opacity={o} fill={fg}
+            points={`${x},${y-6} ${x+1.8},${y-1.8} ${x+6},${y} ${x+1.8},${y+1.8} ${x},${y+6} ${x-1.8},${y+1.8} ${x-6},${y} ${x-1.8},${y-1.8}`} />;
+        })}
+        <polygon points="200,25 175,75 225,75" fill={fg} opacity="0.85" />
+        <polygon points="200,55 165,110 235,110" fill={fg} opacity="0.85" />
+        <polygon points="200,90 155,150 245,150" fill={fg} opacity="0.85" />
+        <rect x="192" y="150" width="16" height="16" fill={dark} opacity="0.5" />
+        <circle cx="200" cy="22" r="5" fill={fg} />
+      </svg>
+    );
+  }
+
+  if (catKey === 'gamescom') {
+    const tilt = rnd(10, 2) - 5;
+    return (
+      <svg {...common}>
+        <rect width="400" height="170" fill={bg} />
+        <g transform={`rotate(${tilt} 200 90)`}>
+          <path d="M100 90 a60 60 0 0 1 200 0 v22 a18 18 0 0 1 -32 11 l-14 -16 h-108 l-14 16 a18 18 0 0 1 -32 -11 z" fill={fg} opacity="0.8" />
+          <circle cx="150" cy="85" r="9" fill={bg} />
+          <rect x="146" y="76" width="8" height="18" fill={dark} opacity="0.5" />
+          <rect x="141" y="81" width="18" height="8" fill={dark} opacity="0.5" />
+          <circle cx="255" cy="80" r="7" fill={dark} opacity="0.5" />
+          <circle cx="275" cy="98" r="7" fill={dark} opacity="0.5" />
+        </g>
+        <path d="M40 60 a90 90 0 0 0 0 60" fill="none" stroke={fg} strokeWidth="3" opacity="0.35" />
+        <path d="M25 45 a115 115 0 0 0 0 90" fill="none" stroke={fg} strokeWidth="3" opacity="0.22" />
+      </svg>
+    );
+  }
+
+  if (catKey === 'karneval' || catKey === 'pride') {
+    const confetti = [[60,40],[340,50],[80,130],[320,120],[50,90],[350,95],[200,20],[120,150],[300,30],[20,60]];
+    const count = 7 + rnd(4, 6);
+    return (
+      <svg {...common}>
+        <rect width="400" height="170" fill={bg} />
+        <path d="M140 60 q60 -50 120 0 q20 15 20 40 q0 45 -80 55 q-80 -10 -80 -55 q0 -25 20 -40 z" fill={fg} opacity="0.75" />
+        <ellipse cx="170" cy="85" rx="10" ry="14" fill={bg} />
+        <ellipse cx="230" cy="85" rx="10" ry="14" fill={bg} />
+        <path d="M185 118 q15 12 30 0" fill="none" stroke={bg} strokeWidth="3" strokeLinecap="round" />
+        {confetti.slice(0, count).map((p,i) => (
+          <rect key={i} x={p[0]} y={p[1]} width="8" height="8" fill={fg} opacity={0.3+0.1*(i%3)} transform={`rotate(${i*37+rnd(30,i)} ${p[0]} ${p[1]})`} />
+        ))}
+      </svg>
+    );
+  }
+
+  if (catKey === 'feuerwerk') {
+    const bursts = [[110+rnd(40,1)-20,60+rnd(20,2)-10,24+rnd(8,3)],[290+rnd(30,4)-15,45+rnd(20,5)-10,20+rnd(8,6)],[210+rnd(30,7)-15,90+rnd(20,8)-10,28+rnd(8,9)]];
+    return (
+      <svg {...common}>
+        <rect width="400" height="170" fill={dark} />
+        {bursts.map((b,i) => (
+          <g key={i}>
+            {Array.from({length:10}).map((_,j) => {
+              const ang = (j/10)*2*Math.PI;
+              const x2 = b[0]+Math.cos(ang)*b[2];
+              const y2 = b[1]+Math.sin(ang)*b[2];
+              return <line key={j} x1={b[0]} y1={b[1]} x2={x2} y2={y2} stroke={fg} strokeWidth="1.5" opacity="0.8" />;
+            })}
+            <circle cx={b[0]} cy={b[1]} r="3" fill={fg} />
+          </g>
+        ))}
+        <rect x="0" y="150" width="400" height="20" fill={dark} />
+        <rect x="0" y="148" width="400" height="4" fill={fg} opacity="0.4" />
+      </svg>
+    );
+  }
+
+  if (catKey === 'marathon') {
+    return (
+      <svg {...common}>
+        <rect width="400" height="170" fill={bg} />
+        <line x1="0" y1="140" x2="400" y2="140" stroke={dark} strokeWidth="3" opacity="0.25" />
+        {[30,90,150,210,270,330].map((x,i) => (
+          <rect key={i} x={x} y="138" width="24" height="4" fill={dark} opacity="0.3" />
+        ))}
+        <g transform={`translate(${170+rnd(50,1)},60)`}>
+          <circle cx="10" cy="0" r="9" fill={fg} />
+          <path d="M10 10 q-4 20 -18 30 M10 10 q10 14 26 16 M10 10 q2 22 -10 42 M10 10 q14 6 22 -4" fill="none" stroke={fg} strokeWidth="6" strokeLinecap="round" />
+        </g>
+      </svg>
+    );
+  }
+
+  return (
+    <svg {...common}>
+      <rect width="400" height="170" fill={bg} />
+      <circle cx="200" cy="85" r="40" fill={fg} opacity="0.5" />
+    </svg>
+  );
+}
+
 function EventImage({ ev, cat }) {
   const [failed, setFailed] = useState(false);
   const src = ev.img || `/images/${ev.slug || ev.id}.jpg`;
   if (failed) {
     return (
-      <div style={{ width: '100%', height: 170, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 52, background: cat.chip }}>
-        {cat.icon}
+      <div style={{ width: '100%', height: 170, overflow: 'hidden' }}>
+        <CategoryArt cat={cat} catKey={ev.cat} eventId={ev.id} />
       </div>
     );
   }
