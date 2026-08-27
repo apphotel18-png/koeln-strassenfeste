@@ -76,13 +76,22 @@ const EVENTS = [
       es: 'Cada año, la KG Rot Weiß convierte el estacionamiento junto a la iglesia de Wahn en el punto de encuentro de todo el barrio. Durante tres días, Kaschämm y MAM, una banda tributo a BAP, ponen la música en vivo mientras grupos de baile y vecinos se mezclan entre los puestos de comida. Una fiesta de barrio sin escenario de famosos, solo un Veedel que festeja junto.'
     } },
   { id: 'e2', slug: 'gamescom-city-festival', date: '2026-08-29', endDate: '2026-08-30', cat: 'gamescom',
-    time: { de: 'ab ca. 16:00 Uhr', en: 'from about 4:00 PM', es: 'desde aprox. las 16:00' },
+    time: { de: 'Sa und So, ab ca. 16:00 Uhr', en: 'Sat and Sun, from about 4:00 PM', es: 'sábado y domingo, desde aprox. las 16:00' },
     name: { de: 'Gamescom City Festival', en: 'Gamescom City Festival', es: 'Gamescom City Festival' },
-    loc: 'Hohenzollernring, Rudolfplatz', address: 'Hohenzollernring, 50674 Köln', source: 'citynews-koeln.de',
+    loc: 'Hohenzollernring und Rudolfplatz', address: 'Zwei Bühnen: Hohenzollernring, 50672 Köln und Rudolfplatz, 50674 Köln', source: 'koeln.de',
     story: {
-      de: 'Während in den Messehallen von Deutz die größte Gaming Messe der Welt öffnet, verwandelt sich der Hohenzollernring in eine kostenlose Open Air Bühne. Am Rudolfplatz und am Ring spielen Bands wie The Notwist und Thees Uhlmann, dazwischen laden Streetfoodstände und Gaming Stationen zum Bleiben ein. Kein Messeticket nötig, nur Lust auf Musik mitten in der Stadt.',
-      en: "While the world's largest gaming fair opens in the Deutz exhibition halls, Hohenzollernring turns into a free open air stage. Bands like The Notwist and Thees Uhlmann play at Rudolfplatz and along the ring, with street food stalls and gaming stations in between. No expo ticket needed, just an appetite for music in the middle of the city.",
-      es: 'Mientras la feria de videojuegos más grande del mundo abre en los pabellones de Deutz, el Hohenzollernring se transforma en un escenario gratuito al aire libre. En Rudolfplatz y a lo largo del anillo tocan bandas como The Notwist y Thees Uhlmann, con puestos de comida callejera y estaciones de videojuegos entre medio. No hace falta entrada a la feria, solo ganas de música en pleno centro.'
+      de: 'Während in den Messehallen von Deutz die größte Gaming Messe der Welt öffnet, verwandeln sich Hohenzollernring und Rudolfplatz in zwei kostenlose Open Air Bühnen, beide an beiden Tagen bespielt. Auf der Hauptbühne am Ring treten unter anderem Thees Uhlmann und The Notwist auf, während am Rudolfplatz Guildo Horn und Elias spielen. Dazwischen laden Streetfoodstände und Gaming Stationen zum Bleiben ein. Kein Messeticket nötig, nur Lust auf Musik mitten in der Stadt.',
+      en: "While the world's largest gaming fair opens in the Deutz exhibition halls, both Hohenzollernring and Rudolfplatz turn into free open air stages, each running on both days. The main stage on the ring features acts like Thees Uhlmann and The Notwist, while Rudolfplatz hosts Guildo Horn and Elias. Street food stalls and gaming stations fill the space in between. No expo ticket needed, just an appetite for music in the middle of the city.",
+      es: 'Mientras la feria de videojuegos más grande del mundo abre en los pabellones de Deutz, tanto el Hohenzollernring como Rudolfplatz se transforman en dos escenarios gratuitos al aire libre, los dos activos ambos días. En el escenario principal del anillo tocan artistas como Thees Uhlmann y The Notwist, mientras que en Rudolfplatz se presentan Guildo Horn y Elias. Puestos de comida callejera y estaciones de videojuegos llenan el espacio entre medio. No hace falta entrada a la feria, solo ganas de música en pleno centro.'
+    } },
+  { id: 'e2b', slug: 'toggo-tour', date: '2026-08-29', endDate: '2026-08-30', cat: 'gamescom',
+    time: { de: 'Sa und So, 11:00 bis 18:00 Uhr', en: 'Sat and Sun, 11:00 AM to 6:00 PM', es: 'sábado y domingo, de 11:00 a 18:00' },
+    name: { de: 'Toggo Tour', en: 'Toggo Tour', es: 'Toggo Tour' },
+    loc: 'Picassoplatz, Deutz', address: 'Picassoplatz 1, 50679 Köln', source: 'koeln.de',
+    story: {
+      de: 'Auf der anderen Rheinseite, direkt vor dem RTL Sendezentrum, verwandelt sich der Picassoplatz in eine Erlebniswelt für Familien, als Teil des Gamescom City Festivals. Kinder treffen Figuren wie SpongeBob, Paw Patrol und Woozle Goozle, probieren Spielstationen aus und schauen einer Bühnenshow mit Live Musik zu. Der Eintritt ist, wie beim Rest des Festivals, komplett kostenlos.',
+      en: "On the other side of the Rhine, right in front of the RTL broadcast center, Picassoplatz turns into a family experience world as part of the Gamescom City Festival. Kids meet characters like SpongeBob, Paw Patrol and Woozle Goozle, try out play stations and watch a stage show with live music. Entry is completely free, just like the rest of the festival.",
+      es: 'Del otro lado del Rin, justo frente al centro de RTL, la plaza Picassoplatz se convierte en un mundo de experiencias para familias, como parte del Gamescom City Festival. Los chicos se encuentran con personajes como Bob Esponja, Paw Patrol y Woozle Goozle, prueban estaciones de juego y miran un show en vivo con música. La entrada es completamente gratis, igual que el resto del festival.'
     } },
   { id: 'e3', slug: 'lindenthaler-sommerfest', date: '2026-08-29', endDate: '2026-08-30', cat: 'strassenfest',
     name: { de: 'Lindenthaler Sommerfest', en: 'Lindenthaler Sommerfest', es: 'Lindenthaler Sommerfest' },
@@ -183,6 +192,78 @@ const EVENTS = [
       en: 'The second entrance to Heinzels Wintermärchen leads straight to the large open air ice rink on Heumarkt, where skaters glide under the winter sky. Between the two locations at Alter Markt and Heumarkt lies the largest connected Christmas market area in the city. Anyone staying into January will find stalls still open even after New Year.',
       es: 'La segunda entrada a Heinzels Wintermärchen lleva directo a la gran pista de patinaje al aire libre en el Heumarkt, donde se puede patinar bajo el cielo invernal. Entre las dos sedes, en Alter Markt y Heumarkt, se extiende el área de mercado navideño conectada más grande de la ciudad. Quienes se queden hasta enero encontrarán puestos abiertos incluso después de año nuevo.'
     } },
+  { id: 'e36', slug: 'apero-markt', date: '2026-08-07', endDate: '2026-09-20', cat: 'strassenfest',
+    time: { de: 'Fr 18 bis 23 Uhr, Sa 13 bis 23 Uhr, So 13 bis 20 Uhr', en: 'Fri 6 to 11 PM, Sat 1 to 11 PM, Sun 1 to 8 PM', es: 'viernes de 18 a 23, sábado de 13 a 23, domingo de 13 a 20' },
+    name: { de: 'Apéro Markt', en: 'Apéro Markt', es: 'Apéro Markt' },
+    loc: 'Grüngürtel, Vogelsanger Straße', address: 'Innerer Grüngürtel an der Vogelsanger Straße, 50672 Köln', source: 'aperomarkt.de',
+    story: {
+      de: 'An sieben Wochenenden zwischen August und September verwandelt sich der Grüngürtel an der Vogelsanger Straße in ein mediterranes Pop up mit Spritz, Wein und Streetfood unter freiem Himmel. Die Stadt Köln unterstützt das Projekt als Alternative zum überfüllten Brüsseler Platz, mit Sitzgelegenheiten und entspannten DJ Sounds. Der Eintritt ist frei, bezahlt wird nur, was man trinkt oder isst.',
+      en: 'On seven weekends between August and September, the Grüngürtel green belt at Vogelsanger Straße turns into a Mediterranean pop up with spritz, wine and street food under the open sky. The city of Cologne supports the project as an alternative to the crowded Brüsseler Platz, with seating and relaxed DJ sounds. Entry is free, you only pay for what you eat or drink.',
+      es: 'Durante siete fines de semana entre agosto y septiembre, el cinturón verde junto a la Vogelsanger Straße se convierte en un pop up mediterráneo con spritz, vino y comida callejera al aire libre. La ciudad de Colonia apoya el proyecto como alternativa a la sobrepoblada Brüsseler Platz, con asientos y sonidos relajados de DJ. La entrada es gratis, solo se paga lo que se come o se bebe.'
+    } },
+  { id: 'e37', slug: 'mitafrika-festival', date: '2026-08-21', endDate: '2026-08-23', cat: 'strassenfest',
+    time: { de: 'Fr ab 13:00 Uhr, Sa und So ab 11:00 Uhr', en: 'Fri from 1:00 PM, Sat and Sun from 11:00 AM', es: 'viernes desde las 13, sábado y domingo desde las 11' },
+    name: { de: 'MitAfrika Festival', en: 'MitAfrika Festival', es: 'Festival MitAfrika' },
+    loc: 'Schokoladenmuseum, Rheinauhafen', address: 'Am Schokoladenmuseum 1a, 50678 Köln', source: 'schokoladenmuseum.de',
+    story: {
+      de: 'Zum 20. Jubiläum verwandelt sich das Gelände am Schokoladenmuseum in einen Treffpunkt für afrikanische Musik, Tanz und Kultur, mit Live Acts aus Senegal, Gambia, Ghana und der afrikanischen Diaspora. Ein Weltmarkt mit Kunsthandwerk und Kulinarik sowie Trommel und Tanzworkshops ergänzen das Bühnenprogramm. Organisiert vom Verein Mama Afrika, komplett bei freiem Eintritt.',
+      en: 'For its 20th anniversary, the grounds by the Chocolate Museum turn into a meeting point for African music, dance and culture, with live acts from Senegal, Gambia, Ghana and the African diaspora. A world market with crafts and food, plus drumming and dance workshops, round out the stage program. Organized by the Mama Afrika association, completely free to attend.',
+      es: 'En su 20 aniversario, el predio junto al Museo del Chocolate se convierte en un punto de encuentro para la música, la danza y la cultura africana, con artistas en vivo de Senegal, Gambia, Ghana y la diáspora africana. Un mercado mundial con artesanías y gastronomía, además de talleres de tambores y baile, completan el programa. Organizado por la asociación Mama Afrika, con entrada completamente gratis.'
+    } },
+  { id: 'e38', slug: 'feierabendmarkt-suerth-1', date: '2026-08-28', endDate: '2026-08-28', cat: 'strassenfest',
+    time: { de: '16:00 bis 22:00 Uhr', en: '4:00 PM to 10:00 PM', es: 'de 16:00 a 22:00' },
+    name: { de: 'Feierabendmarkt Sürth', en: 'Feierabendmarkt Sürth', es: 'Feierabendmarkt Sürth' },
+    loc: 'Marktplatz Sürth', address: 'Sürther Hauptstraße/Fronhofstraße, 50999 Köln', source: 'feierabendmaerkte-koeln.de',
+    story: {
+      de: 'Einmal im Monat, immer am letzten Freitag, verwandelt sich der Marktplatz in Sürth in ein Open Air Wohnzimmer mit Foodtrucks, Kölsch vom Fass und Wein. Der neueste Standort der Kölner Feierabendmärkte bringt rheinnahes Nachbarschaftsgefühl an einen sonst ruhigen Platz im Süden der Stadt.',
+      en: 'Once a month, always on the last Friday, the market square in Sürth turns into an open air living room with food trucks, draft Kölsch and wine. The newest location of the Cologne Feierabendmärkte brings riverside neighborhood spirit to an otherwise quiet square in the south of the city.',
+      es: 'Una vez al mes, siempre el último viernes, la plaza del mercado en Sürth se convierte en un living al aire libre con food trucks, Kölsch de barril y vino. La sede más nueva de los Feierabendmärkte de Colonia trae espíritu de barrio junto al río a una plaza normalmente tranquila en el sur de la ciudad.'
+    } },
+  { id: 'e39', slug: 'feierabendmarkt-hermeskeiler-1', date: '2026-09-04', endDate: '2026-09-04', cat: 'strassenfest',
+    time: { de: '16:00 bis 22:00 Uhr', en: '4:00 PM to 10:00 PM', es: 'de 16:00 a 22:00' },
+    name: { de: 'Feierabendmarkt Hermeskeiler Platz', en: 'Feierabendmarkt Hermeskeiler Platz', es: 'Feierabendmarkt Hermeskeiler Platz' },
+    loc: 'Sülz', address: 'Hermeskeiler Platz, 50937 Köln', source: 'feierabendmaerkte-koeln.de',
+    story: {
+      de: 'In Sülz ist der Feierabendmarkt am familiärsten: zwischen Bäumen und Grünflächen treffen sich Nachbarn mit ihren Kindern bei Foodtrucks und kalten Getränken. Der Hermeskeiler Platz ist der Standort, der am häufigsten bespielt wird, oft mit einem zusätzlichen Termin im Monat.',
+      en: 'In Sülz, the Feierabendmarkt feels the most family friendly: among trees and green spaces, neighbors gather with their kids around food trucks and cold drinks. Hermeskeiler Platz is the most frequently used location, often getting an extra date each month.',
+      es: 'En Sülz, el Feierabendmarkt es el más familiar: entre árboles y espacios verdes, los vecinos se juntan con sus hijos junto a food trucks y bebidas frías. Hermeskeiler Platz es la sede que más veces se usa, a menudo con una fecha extra cada mes.'
+    } },
+  { id: 'e40', slug: 'feierabendmarkt-neptunplatz-1', date: '2026-09-11', endDate: '2026-09-11', cat: 'strassenfest',
+    time: { de: '16:00 bis 22:00 Uhr', en: '4:00 PM to 10:00 PM', es: 'de 16:00 a 22:00' },
+    name: { de: 'Feierabendmarkt Neptunplatz', en: 'Feierabendmarkt Neptunplatz', es: 'Feierabendmarkt Neptunplatz' },
+    loc: 'Ehrenfeld', address: 'Neptunplatz, 50823 Köln', source: 'feierabendmaerkte-koeln.de',
+    story: {
+      de: 'Der Neptunplatz in Ehrenfeld ist der urbanste der Kölner Feierabendmärkte, mit einem jungen Publikum, das nach der Arbeit direkt vom Rad auf ein kühles Getränk vorbeischaut. Große Freifläche, gute Musik, unkomplizierte Stimmung.',
+      en: 'Neptunplatz in Ehrenfeld is the most urban of the Cologne Feierabendmärkte, with a young crowd stopping by straight off their bikes after work for a cold drink. Large open space, good music, easygoing mood.',
+      es: 'Neptunplatz en Ehrenfeld es el más urbano de los Feierabendmärkte de Colonia, con un público joven que pasa directo de la bicicleta después del trabajo a tomar algo fresco. Espacio amplio, buena música, ambiente relajado.'
+    } },
+  { id: 'e41', slug: 'feierabendmarkt-suerth-2', date: '2026-09-25', endDate: '2026-09-25', cat: 'strassenfest',
+    time: { de: '16:00 bis 22:00 Uhr', en: '4:00 PM to 10:00 PM', es: 'de 16:00 a 22:00' },
+    name: { de: 'Feierabendmarkt Sürth', en: 'Feierabendmarkt Sürth', es: 'Feierabendmarkt Sürth' },
+    loc: 'Marktplatz Sürth', address: 'Sürther Hauptstraße/Fronhofstraße, 50999 Köln', source: 'feierabendmaerkte-koeln.de',
+    story: {
+      de: 'Die zweite Septemberrunde des Feierabendmarkts in Sürth, wieder mit Foodtrucks und Kölsch vom Fass auf dem Marktplatz im Süden der Stadt.',
+      en: 'The second September edition of the Feierabendmarkt in Sürth, again with food trucks and draft Kölsch on the market square in the south of the city.',
+      es: 'La segunda edición de septiembre del Feierabendmarkt en Sürth, otra vez con food trucks y Kölsch de barril en la plaza del mercado, al sur de la ciudad.'
+    } },
+  { id: 'e42', slug: 'feierabendmarkt-hermeskeiler-2', date: '2026-10-02', endDate: '2026-10-02', cat: 'strassenfest',
+    time: { de: '16:00 bis 22:00 Uhr', en: '4:00 PM to 10:00 PM', es: 'de 16:00 a 22:00' },
+    name: { de: 'Feierabendmarkt Hermeskeiler Platz', en: 'Feierabendmarkt Hermeskeiler Platz', es: 'Feierabendmarkt Hermeskeiler Platz' },
+    loc: 'Sülz', address: 'Hermeskeiler Platz, 50937 Köln', source: 'feierabendmaerkte-koeln.de',
+    story: {
+      de: 'Einer der letzten Termine der Saison in Sülz, bevor es im Oktober kühler wird. Foodtrucks und Getränke wie gewohnt, diesmal mit Herbststimmung.',
+      en: 'One of the last dates of the season in Sülz, before it gets cooler in October. Food trucks and drinks as usual, this time with an autumn mood.',
+      es: 'Una de las últimas fechas de la temporada en Sülz, antes de que refresque en octubre. Food trucks y bebidas como siempre, esta vez con ambiente otoñal.'
+    } },
+  { id: 'e43', slug: 'feierabendmarkt-neptunplatz-2', date: '2026-10-09', endDate: '2026-10-09', cat: 'strassenfest',
+    time: { de: '16:00 bis 22:00 Uhr', en: '4:00 PM to 10:00 PM', es: 'de 16:00 a 22:00' },
+    name: { de: 'Feierabendmarkt Neptunplatz', en: 'Feierabendmarkt Neptunplatz', es: 'Feierabendmarkt Neptunplatz' },
+    loc: 'Ehrenfeld', address: 'Neptunplatz, 50823 Köln', source: 'feierabendmaerkte-koeln.de',
+    story: {
+      de: 'Der letzte Feierabendmarkt der Saison in Ehrenfeld, bevor sich die Stadt im November schon in Richtung Weihnachtsmärkte orientiert.',
+      en: 'The last Feierabendmarkt of the season in Ehrenfeld, before the city turns its attention to Christmas markets in November.',
+      es: 'El último Feierabendmarkt de la temporada en Ehrenfeld, antes de que la ciudad empiece a mirar hacia los mercados navideños en noviembre.'
+    } },
   { id: 'e15', slug: 'bunt-im-carree', date: '2026-09-05', endDate: '2026-09-06', cat: 'strassenfest',
     name: { de: 'Bunt im Carrée', en: 'Bunt im Carrée', es: 'Bunt im Carrée' },
     loc: 'Berrenrather Str. / Sülzburgstr., Sülz-Klettenberg', address: 'Berrenrather Straße, 50937 Köln', source: 'koeln.de',
@@ -216,6 +297,15 @@ const EVENTS = [
       de: 'Rund 25000 Läufer starten am Ottoplatz in Deutz und ziehen über die Deutzer Brücke direkt auf den Dom zu, vorbei am Rudolfplatz, durch Sülz und die Severinstraße. Hunderttausende Zuschauer säumen die Strecke mit Musik und Anfeuerungen, und wer nicht selbst läuft, kann sich einfach eine Ecke suchen und mitfiebern. Der viertgrößte Marathon Deutschlands, mitten durch die eigene Stadt.',
       en: 'About 25000 runners start at Ottoplatz in Deutz and cross the Deutzer Brücke straight toward the cathedral, passing Rudolfplatz, Sülz and Severinstraße. Hundreds of thousands of spectators line the route with music and cheering, and anyone not running can simply pick a spot and join the excitement. The fourth largest marathon in Germany, running right through the city itself.',
       es: 'Unos 25000 corredores salen desde Ottoplatz en Deutz y cruzan el puente Deutzer directo hacia la catedral, pasando por Rudolfplatz, Sülz y la Severinstraße. Cientos de miles de espectadores acompañan el recorrido con música y aliento, y quien no corre puede simplemente elegir una esquina y sumarse al entusiasmo. El cuarto maratón más grande de Alemania, atravesando la propia ciudad.'
+    } },
+  { id: 'e19b', slug: 'eroeffnungsfest-offenbachplatz', date: '2026-09-19', endDate: '2026-09-20', cat: 'strassenfest',
+    time: { de: 'Sa 12 bis 23 Uhr, So 11 bis 22 Uhr', en: 'Sat 12 PM to 11 PM, Sun 11 AM to 10 PM', es: 'sábado de 12 a 23, domingo de 11 a 22' },
+    name: { de: 'Eröffnungsfest Oper und Schauspiel Köln', en: 'Cologne Opera and Theatre Opening Festival', es: 'Festival de apertura de la Ópera y el Teatro de Colonia' },
+    loc: 'Offenbachplatz', address: 'Offenbachplatz, 50667 Köln', source: 'buehnen.koeln',
+    story: {
+      de: 'Nach Jahren der Sanierung öffnen Opernhaus und Schauspielhaus endlich wieder ihre Türen, und die ganze Stadt ist eingeladen mitzufeiern. Rund um den Offenbachplatz gibt es Programm in und um beide Häuser, dazu eine Open Air Bühne im Freien, alles bei freiem Eintritt. Für Entdeckungstouren durch die Gebäude empfiehlt sich eine kostenlose Zeitslot Buchung im Voraus.',
+      en: 'After years of renovation, the Opera House and Theatre finally reopen their doors, and the whole city is invited to celebrate. Around Offenbachplatz there is programming in and around both buildings, plus an open air stage outside, all completely free. For tours through the buildings, booking a free time slot in advance is recommended.',
+      es: 'Después de años de renovación, la Ópera y el Teatro de Colonia finalmente vuelven a abrir sus puertas, y toda la ciudad está invitada a festejar. Alrededor de Offenbachplatz hay programación dentro y fuera de ambos edificios, más un escenario al aire libre, todo con entrada gratuita. Para recorrer los edificios se recomienda reservar un horario gratuito con anticipación.'
     } },
   { id: 'e19', slug: 'lindenthaler-herbstfest-street-gallery', date: '2026-10-09', endDate: '2026-10-11', cat: 'strassenfest',
     name: { de: 'Lindenthaler Herbstfest (Street Gallery)', en: 'Lindenthal Autumn Festival (Street Gallery)', es: 'Fiesta de otoño en Lindenthal (Street Gallery)' },
