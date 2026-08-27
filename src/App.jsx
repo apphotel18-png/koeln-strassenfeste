@@ -127,7 +127,7 @@ const EVENTS = [
     } },
   { id: 'e8', slug: 'elfter-im-elften-sessionseroeffnung', date: '2026-11-11', endDate: '2026-11-11', cat: 'karneval',
     time: { de: '11:11 Uhr', en: '11:11 AM', es: '11:11' },
-    name: { de: '11-11: Sessionseröffnung', en: '11-11: Carnival Season Opening', es: '11-11: Apertura de la temporada de Carnaval' },
+    name: { de: '11 11', en: '11 11', es: '11 11' },
     loc: 'Alter Markt', address: 'Alter Markt, 50667 Köln', source: 'koelnerkarneval.de',
     story: {
       de: 'Punkt elf Uhr elf am elften Tag des elften Monats beginnt auf dem Alter Markt offiziell die fünfte Jahreszeit. Tausende Jecken in Kostümen singen und tanzen zu kölschen Tönen, während das Dreigestirn zum ersten Mal öffentlich auftritt. Der Startschuss für Monate voller Karneval in der ganzen Stadt.',
