@@ -125,7 +125,7 @@ const EVENTS = [
       en: 'Along the Rhine bank in Deutz, a ferris wheel turns for over a week while roller coasters and classic rides transform the riverside promenade into a fairground. Entry to the grounds is free, only the individual rides are paid. A walk among lights, cotton candy and a view of the cathedral across the river.',
       es: 'En la orilla del Rin en Deutz, una noria gira durante más de una semana mientras montañas rusas y atracciones clásicas transforman el paseo ribereño en un parque de diversiones. El acceso al recinto es gratis, solo se pagan las atracciones individuales. Un paseo entre luces, algodón de azúcar y vista a la catedral del otro lado del río.'
     } },
-  { id: 'e8', slug: 'elfter-im-elften-sessionseroeffnung', date: '2026-11-11', endDate: '2026-11-11', cat: 'karneval',
+  { id: 'e8', slug: '11-11', date: '2026-11-11', endDate: '2026-11-11', cat: 'karneval',
     time: { de: '11:11 Uhr', en: '11:11 AM', es: '11:11' },
     name: { de: '11 11', en: '11 11', es: '11 11' },
     loc: 'Alter Markt', address: 'Alter Markt, 50667 Köln', source: 'koelnerkarneval.de',
