@@ -9,6 +9,9 @@ const T = {
     emptyTitle: 'Willkommen bei Köln Umsonst!',
     emptyText: 'Hier findest du alle kostenlosen Open-Air-Events in Köln: Straßenfeste, Weihnachtsmärkte, Feuerwerk und mehr. Für diesen Zeitraum ist noch nichts eingetragen. Schau doch bei Demnächst vorbei oder komm später wieder.',
     eventsNear: v => `${v} Events`, fromStation: 'Von:', route: 'Route',
+    searchPlaceholder: 'Feste, Märkte, Umzüge...', navHome: 'Start', navMap: 'Karte', navFav: 'Favoriten',
+    catAll: 'Alle', featured: 'Diese Woche empfohlen', allEvents: 'Alle Events', noFavs: 'Noch keine Favoriten. Tippe auf das Herz bei einem Event.',
+    mapComingSoon: 'Kartenansicht kommt bald!', noResults: v => `Keine Ergebnisse für „${v}"`,
   },
   en: {
     eyebrow: 'Cologne · today', title1: 'Köln', title2: 'Umsonst',
@@ -17,6 +20,9 @@ const T = {
     emptyTitle: 'Welcome to Köln Umsonst!',
     emptyText: "Here you'll find every free open-air event in Cologne: street festivals, Christmas markets, fireworks and more. Nothing is listed for this time range yet. Try Upcoming or check back soon.",
     eventsNear: v => `${v} events`, fromStation: 'From:', route: 'Route',
+    searchPlaceholder: 'Festivals, markets, parades...', navHome: 'Home', navMap: 'Map', navFav: 'Favorites',
+    catAll: 'All', featured: 'Recommended this week', allEvents: 'All events', noFavs: 'No favorites yet. Tap the heart on an event.',
+    mapComingSoon: 'Map view coming soon!', noResults: v => `No results for "${v}"`,
   },
   es: {
     eyebrow: 'Colonia · hoy', title1: 'Köln', title2: 'Umsonst',
@@ -25,6 +31,9 @@ const T = {
     emptyTitle: '¡Bienvenido a Köln Umsonst!',
     emptyText: 'Aquí encontrarás todos los eventos gratis al aire libre en Colonia: fiestas de barrio, mercados de Navidad, fuegos artificiales y más. Todavía no hay nada para este período. Prueba con Próximamente o vuelve pronto.',
     eventsNear: v => `${v} eventos`, fromStation: 'Desde:', route: 'Ruta',
+    searchPlaceholder: 'Fiestas, mercados, desfiles...', navHome: 'Inicio', navMap: 'Mapa', navFav: 'Favoritos',
+    catAll: 'Todos', featured: 'Recomendado esta semana', allEvents: 'Todos los eventos', noFavs: 'Todavía no tenés favoritos. Tocá el corazón en un evento.',
+    mapComingSoon: '¡La vista de mapa llega pronto!', noResults: v => `Sin resultados para "${v}"`,
   },
 };
 
@@ -75,7 +84,7 @@ const EVENTS = [
       en: 'Every year the KG Rot Weiß turns the car park by the church in Wahn into the meeting point for the whole neighborhood. For three days, Kaschämm and MAM, a BAP tribute band, provide live music while dance troupes and neighbors mix among the food stalls. A street festival with no celebrity stage, just a neighborhood celebrating together.',
       es: 'Cada año, la KG Rot Weiß convierte el estacionamiento junto a la iglesia de Wahn en el punto de encuentro de todo el barrio. Durante tres días, Kaschämm y MAM, una banda tributo a BAP, ponen la música en vivo mientras grupos de baile y vecinos se mezclan entre los puestos de comida. Una fiesta de barrio sin escenario de famosos, solo un Veedel que festeja junto.'
     } },
-  { id: 'e2', slug: 'gamescom-city-festival', date: '2026-08-29', endDate: '2026-08-30', cat: 'gamescom',
+  { id: 'e2', slug: 'gamescom-city-festival', images: ['/images/gamescom-hohenzollernring.jpg', '/images/gamescom-rudolfplatz.jpg'], date: '2026-08-29', endDate: '2026-08-30', cat: 'gamescom',
     time: { de: 'Sa und So, ab ca. 16:00 Uhr', en: 'Sat and Sun, from about 4:00 PM', es: 'sábado y domingo, desde aprox. las 16:00' },
     name: { de: 'Gamescom City Festival', en: 'Gamescom City Festival', es: 'Gamescom City Festival' },
     loc: 'Hohenzollernring und Rudolfplatz', address: 'Zwei Bühnen: Hohenzollernring, 50672 Köln und Rudolfplatz, 50674 Köln', source: 'koeln.de',
@@ -1058,7 +1067,12 @@ function mapsUrl(fromQuery, destQuery) {
   return `https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${destination}&travelmode=transit`;
 }
 
-const TODAY = new Date('2026-08-24T00:00:00');
+const TODAY = (() => { const d = new Date(); d.setHours(0, 0, 0, 0); return d; })();
+
+function isEventPast(ev) {
+  const end = new Date((ev.endDate || ev.date) + 'T00:00:00');
+  return end < TODAY;
+}
 
 function inRange(ev, days) {
   const start = new Date(ev.date + 'T00:00:00');
@@ -1223,18 +1237,66 @@ function CategoryArt({ cat, catKey, eventId }) {
   );
 }
 
-function EventImage({ ev, cat }) {
+function SingleImg({ src, height, cat, ev, onFail, onOpenLightbox }) {
   const [failed, setFailed] = useState(false);
-  const src = ev.img || `/images/${ev.slug || ev.id}.jpg`;
   if (failed) {
     return (
-      <div style={{ width: '100%', height: 170, overflow: 'hidden' }}>
+      <div style={{ width: '100%', height, overflow: 'hidden', flexShrink: 0 }}>
         <CategoryArt cat={cat} catKey={ev.cat} eventId={ev.id} />
       </div>
     );
   }
   return (
-    <img src={src} alt="" style={{ width: '100%', height: 170, objectFit: 'cover', display: 'block' }} onError={() => setFailed(true)} />
+    <img src={src} alt="" style={{ width: '100%', height, objectFit: 'cover', objectPosition: 'center', display: 'block', flexShrink: 0, scrollSnapAlign: 'start', cursor: onOpenLightbox ? 'zoom-in' : 'default' }}
+      onClick={(e) => { if (onOpenLightbox) { e.stopPropagation(); onOpenLightbox(src); } }}
+      onError={() => { setFailed(true); onFail && onFail(); }} />
+  );
+}
+
+function Lightbox({ src, onClose }) {
+  if (!src) return null;
+  return (
+    <div onClick={onClose} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.9)', zIndex: 200, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <button onClick={onClose} style={{ position: 'absolute', top: 18, right: 18, width: 38, height: 38, borderRadius: 19, border: 'none', background: 'rgba(255,255,255,0.15)', color: 'white', fontSize: 20, cursor: 'pointer' }}>✕</button>
+      <img src={src} alt="" style={{ maxWidth: '94%', maxHeight: '88%', objectFit: 'contain' }} />
+    </div>
+  );
+}
+
+function EventImage({ ev, cat, height = 170, enableLightbox = false, onOpenLightbox }) {
+  const containerRef = React.useRef(null);
+  const [activeIdx, setActiveIdx] = useState(0);
+  const imgs = ev.images && ev.images.length > 0 ? ev.images : [ev.img || `/images/${ev.slug || ev.id}.jpg`];
+  const lightboxHandler = enableLightbox ? onOpenLightbox : null;
+
+  if (imgs.length === 1) {
+    return <SingleImg src={imgs[0]} height={height} cat={cat} ev={ev} onOpenLightbox={lightboxHandler} />;
+  }
+
+  const handleScroll = () => {
+    const el = containerRef.current;
+    if (!el) return;
+    const idx = Math.round(el.scrollLeft / el.clientWidth);
+    setActiveIdx(idx);
+  };
+
+  return (
+    <div style={{ position: 'relative', width: '100%', height }}>
+      <div ref={containerRef} onScroll={handleScroll}
+        style={{ display: 'flex', overflowX: 'auto', scrollSnapType: 'x mandatory', width: '100%', height: '100%', WebkitOverflowScrolling: 'touch' }}>
+        {imgs.map((src, i) => (
+          <div key={i} style={{ minWidth: '100%', height: '100%', scrollSnapAlign: 'start', flexShrink: 0 }}>
+            <img src={src} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center', cursor: lightboxHandler ? 'zoom-in' : 'default', display: 'block' }}
+              onClick={(e) => { if (lightboxHandler) { e.stopPropagation(); lightboxHandler(src); } }} />
+          </div>
+        ))}
+      </div>
+      <div style={{ position: 'absolute', bottom: 8, left: 0, right: 0, display: 'flex', justifyContent: 'center', gap: 5 }}>
+        {imgs.map((_, i) => (
+          <div key={i} style={{ width: 6, height: 6, borderRadius: 3, background: i === activeIdx ? '#F7F3EA' : 'rgba(247,243,234,0.5)' }} />
+        ))}
+      </div>
+    </div>
   );
 }
 
@@ -1257,116 +1319,224 @@ function formatDate(ev, lang) {
   return dateStr;
 }
 
+function EventCard({ ev, lang, t, cat, fromStation, isFavorite, onToggleFavorite, onOpenLightbox }) {
+  return (
+    <div style={{ background: 'white', marginBottom: 14, borderRadius: 18, overflow: 'hidden', boxShadow: '0 2px 10px rgba(31,78,92,0.10)', opacity: ev.isPast ? 0.6 : 1, position: 'relative' }}>
+      <EventImage ev={ev} cat={cat} enableLightbox={false} onOpenLightbox={onOpenLightbox} />
+      <button onClick={() => onToggleFavorite(ev.id)}
+        style={{ position: 'absolute', top: 12, right: 12, width: 34, height: 34, borderRadius: 17, border: 'none', background: 'rgba(15,30,38,0.55)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 17, cursor: 'pointer' }}>
+        {isFavorite ? '❤️' : '🤍'}
+      </button>
+      <div style={{ padding: '16px 18px 18px 18px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 6 }}>
+          <div style={{ fontSize: 12, fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', color: cat.text, background: cat.chip, padding: '4px 10px', borderRadius: 10 }}>{cat.label[lang]}</div>
+          <div style={{ fontSize: 12, fontWeight: 800, padding: '4px 10px', borderRadius: 10, background: ev.isPast ? '#e5e1d6' : '#e2f0e9', color: ev.isPast ? '#8a8378' : '#2f6d52', whiteSpace: 'nowrap' }}>
+            {ev.isPast ? t.past : t.free}
+          </div>
+        </div>
+        <div style={{ fontFamily: '"Cormorant Garamond", Georgia, serif', fontStyle: 'italic', fontSize: 25, fontWeight: 600, color: '#1F4E5C', lineHeight: 1.15, marginBottom: 8 }}>{ev.name[lang]}</div>
+        <div style={{ fontSize: 14.5, color: '#57534e', marginBottom: 12 }}>
+          {formatDate(ev, lang)}
+        </div>
+        {ev.story && (
+          <div style={{ borderLeft: '3px solid #E7B876', padding: '1px 0 1px 13px', marginBottom: 12 }}>
+            <div style={{ fontSize: 14.5, color: '#3a362e', lineHeight: 1.6 }}>{ev.story[lang]}</div>
+          </div>
+        )}
+        {ev.address && (
+          <div style={{ fontSize: 13, color: '#8a8378', marginBottom: 14 }}>{ev.address}</div>
+        )}
+        {!ev.isPast && (
+          <a href={mapsUrl(STATIONS[fromStation].query, ev.address || ev.loc)} target="_blank" rel="noopener noreferrer"
+            style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 13.5, fontWeight: 700, color: '#F7F3EA', textDecoration: 'none', background: '#1F4E5C', borderRadius: 13, padding: '9px 14px' }}>
+            {t.route} {STATIONS[fromStation].label} →
+          </a>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function EventRow({ ev, lang, cat, t, onOpen, isFavorite }) {
+  return (
+    <button onClick={() => onOpen(ev.id)}
+      style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 14, padding: '12px', background: 'white', border: 'none', borderRadius: 16, marginBottom: 10, textAlign: 'left', cursor: 'pointer', opacity: ev.isPast ? 0.6 : 1, boxShadow: '0 1px 4px rgba(31,78,92,0.06)' }}>
+      <div style={{ width: 92, height: 92, borderRadius: 14, overflow: 'hidden', flexShrink: 0 }}>
+        <EventImage ev={ev} cat={cat} height={92} natural={false} />
+      </div>
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ fontSize: 11, fontWeight: 800, color: cat.text, textTransform: 'uppercase', letterSpacing: '0.03em', marginBottom: 3 }}>{cat.label[lang]}</div>
+        <div style={{ fontSize: 16, fontWeight: 700, color: '#22201C', lineHeight: 1.2, marginBottom: 4, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{ev.name[lang]}</div>
+        <div style={{ fontSize: 12.5, color: '#8a8378' }}>{ev.loc} · {formatDate(ev, lang)}</div>
+      </div>
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 8, flexShrink: 0 }}>
+        <div style={{ fontSize: 10, fontWeight: 800, padding: '4px 9px', borderRadius: 8, background: ev.isPast ? '#e5e1d6' : '#e2f0e9', color: ev.isPast ? '#8a8378' : '#2f6d52', whiteSpace: 'nowrap' }}>
+          {ev.isPast ? t.past : t.free}
+        </div>
+        {isFavorite && <span style={{ fontSize: 15 }}>❤️</span>}
+      </div>
+    </button>
+  );
+}
+
 export default function App() {
   const [lang, setLang] = useState('de');
   const [tab, setTab] = useState('week');
   const [fromStation, setFromStation] = useState('hbf');
+  const [section, setSection] = useState('home');
+  const [favorites, setFavorites] = useState([]);
+  const [openId, setOpenId] = useState(null);
+  const [lightboxSrc, setLightboxSrc] = useState(null);
   const t = T[lang];
 
-  const filtered = useMemo(() => {
-    const upcoming = EVENTS.filter(e => !e.isPast);
-    const past = EVENTS.filter(e => e.isPast);
+  React.useEffect(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem('koeln-umsonst-favs') || '[]');
+      setFavorites(saved);
+    } catch (e) {}
+  }, []);
+
+  const toggleFavorite = (id) => {
+    setFavorites(prev => {
+      const next = prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id];
+      try { localStorage.setItem('koeln-umsonst-favs', JSON.stringify(next)); } catch (e) {}
+      return next;
+    });
+  };
+
+  const EVENTS_COMPUTED = useMemo(() => EVENTS.map(e => ({ ...e, isPast: isEventPast(e) })), []);
+
+  const baseFiltered = useMemo(() => {
+    const upcoming = EVENTS_COMPUTED.filter(e => !e.isPast);
+    const past = EVENTS_COMPUTED.filter(e => e.isPast);
     if (tab === 'past') return past.sort((a, b) => new Date(b.date) - new Date(a.date));
     if (tab === 'upcoming') return upcoming.sort((a, b) => new Date(a.date) - new Date(b.date));
-    const days = 7;
-    return upcoming.filter(e => inRange(e, days)).sort((a, b) => new Date(a.date) - new Date(b.date));
-  }, [tab]);
+    return upcoming.filter(e => inRange(e, 7)).sort((a, b) => new Date(a.date) - new Date(b.date));
+  }, [tab, EVENTS_COMPUTED]);
+
+  const favoriteEvents = useMemo(() => EVENTS_COMPUTED.filter(e => favorites.includes(e.id)), [favorites, EVENTS_COMPUTED]);
+  const openEvent = useMemo(() => EVENTS_COMPUTED.find(e => e.id === openId) || null, [openId, EVENTS_COMPUTED]);
 
   return (
     <div style={{ minHeight: '100vh', background: '#E8E3D9', fontFamily: '-apple-system, "Helvetica Neue", Arial, sans-serif' }}>
       <style>{`@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;1,500;1,600&display=swap');`}</style>
-      <div style={{ maxWidth: 430, margin: '0 auto', background: '#E8E3D9', paddingBottom: 40 }}>
+      <div style={{ maxWidth: 430, margin: '0 auto', background: '#E8E3D9', minHeight: '100vh', display: 'flex', flexDirection: 'column', position: 'relative' }}>
 
-        {/* HERO */}
-        <div style={{ position: 'relative', height: 210, overflow: 'hidden', color: '#F7F3EA' }}>
+        {/* HERO HEADER */}
+        <div style={{ position: 'relative', height: 190, overflow: 'hidden', color: '#F7F3EA', flexShrink: 0 }}>
           <img src="/images/hero-dom.jpg" alt="Kölner Dom" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: '35% 25%' }} />
-          <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg, rgba(15,30,38,0.35) 0%, rgba(15,30,38,0.25) 40%, rgba(15,30,38,0.92) 100%)' }} />
-          <div style={{ position: 'relative', padding: '22px 20px 16px 20px', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', boxSizing: 'border-box' }}>
-            <div style={{ display: 'flex', gap: 6 }}>
+          <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg, rgba(15,30,38,0.35) 0%, rgba(15,30,38,0.25) 40%, rgba(15,30,38,0.9) 100%)' }} />
+          <div style={{ position: 'relative', padding: '18px 18px 14px 18px', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', boxSizing: 'border-box' }}>
+            <div style={{ display: 'flex', gap: 6, justifyContent: 'flex-end' }}>
               {['de', 'en', 'es'].map(l => (
                 <button key={l} onClick={() => setLang(l)}
                   style={{
-                    fontSize: 12, fontWeight: 700, padding: '5px 10px', borderRadius: 10, border: 'none', cursor: 'pointer',
+                    fontSize: 11, fontWeight: 700, padding: '4px 8px', borderRadius: 9, border: 'none', cursor: 'pointer',
                     background: lang === l ? '#E7B876' : 'rgba(247,243,234,0.16)',
                     color: lang === l ? '#1F4E5C' : '#F7F3EA',
                   }}>{l.toUpperCase()}</button>
               ))}
             </div>
-            <div>
-              <div style={{ fontFamily: '"Cormorant Garamond", Georgia, serif', fontSize: 32, fontWeight: 500, fontStyle: 'italic', marginTop: 8, lineHeight: 1.05, letterSpacing: '0.01em', textShadow: '0 2px 10px rgba(0,0,0,0.45)' }}>
-                {t.title1} <span style={{ color: '#E7B876', fontWeight: 600 }}>{t.title2}</span>
-              </div>
+            <div style={{ fontFamily: '"Cormorant Garamond", Georgia, serif', fontSize: 30, fontWeight: 500, fontStyle: 'italic', lineHeight: 1.05, textShadow: '0 2px 10px rgba(0,0,0,0.45)' }}>
+              {t.title1} <span style={{ color: '#E7B876', fontWeight: 600 }}>{t.title2}</span>
             </div>
           </div>
         </div>
 
-        {/* TIME TABS */}
-        <div style={{ display: 'flex', gap: 5, padding: '14px 20px 0 20px', overflowX: 'auto' }}>
-          {[['week', t.tabWeek], ['upcoming', t.tabUpcoming], ['past', t.tabPast]].map(([key, label]) => (
-            <button key={key} onClick={() => setTab(key)}
-              style={{
-                flex: '1 0 auto', textAlign: 'center', fontSize: 12, fontWeight: 700, padding: '9px 8px', borderRadius: 16, border: 'none', cursor: 'pointer', whiteSpace: 'nowrap',
-                background: tab === key ? '#1F4E5C' : '#faf7f0', color: tab === key ? '#F7F3EA' : '#57534e',
-              }}>{label}</button>
-          ))}
-        </div>
+        <div style={{ flex: 1, paddingBottom: 90, overflowY: 'auto' }}>
+          {section === 'home' && (
+            <>
+              {/* TIME TABS */}
+              <div style={{ display: 'flex', gap: 5, padding: '14px 18px 12px 18px', overflowX: 'auto' }}>
+                {[['week', t.tabWeek], ['upcoming', t.tabUpcoming], ['past', t.tabPast]].map(([key, label]) => (
+                  <button key={key} onClick={() => setTab(key)}
+                    style={{
+                      flex: '1 0 auto', textAlign: 'center', fontSize: 12, fontWeight: 700, padding: '9px 8px', borderRadius: 16, border: 'none', cursor: 'pointer', whiteSpace: 'nowrap',
+                      background: tab === key ? '#1F4E5C' : 'white', color: tab === key ? '#F7F3EA' : '#57534e',
+                    }}>{label}</button>
+                ))}
+              </div>
 
-        {/* STATION SELECTOR */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 20px 0 20px' }}>
-          <span style={{ fontSize: 13, color: '#8a8378', fontWeight: 700 }}>{t.fromStation}</span>
-          {Object.entries(STATIONS).map(([key, s]) => (
-            <button key={key} onClick={() => setFromStation(key)}
-              style={{
-                fontSize: 13, fontWeight: 700, padding: '6px 12px', borderRadius: 14, border: fromStation === key ? 'none' : '1px solid #d8d2c0', cursor: 'pointer',
-                background: fromStation === key ? '#c9812f' : 'white', color: fromStation === key ? 'white' : '#57534e',
-              }}>{s.label}</button>
-          ))}
-        </div>
+              {/* STATION SELECTOR */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '0 18px 14px 18px' }}>
+                <span style={{ fontSize: 13, color: '#8a8378', fontWeight: 700 }}>{t.fromStation}</span>
+                {Object.entries(STATIONS).map(([key, s]) => (
+                  <button key={key} onClick={() => setFromStation(key)}
+                    style={{
+                      fontSize: 13, fontWeight: 700, padding: '6px 12px', borderRadius: 14, border: fromStation === key ? 'none' : '1px solid #d8d2c0', cursor: 'pointer',
+                      background: fromStation === key ? '#c9812f' : 'white', color: fromStation === key ? 'white' : '#57534e',
+                    }}>{s.label}</button>
+                ))}
+              </div>
 
-        {/* EVENT LIST */}
-        <div style={{ padding: '14px 20px 0 20px' }}>
-          {filtered.length === 0 && (
-            <div style={{ textAlign: 'center', padding: '36px 14px', background: 'white', borderRadius: 16, boxShadow: '0 1px 4px rgba(31,78,92,0.07)' }}>
-              <div style={{ fontSize: 40, marginBottom: 12 }}>🏛️</div>
-              <div style={{ fontFamily: 'Georgia, serif', fontSize: 20, fontWeight: 600, color: '#1F4E5C', marginBottom: 10 }}>{t.emptyTitle}</div>
-              <div style={{ fontSize: 14.5, color: '#57534e', lineHeight: 1.55, maxWidth: 300, margin: '0 auto' }}>{t.emptyText}</div>
+              {/* EVENT LIST: primeras 2 grandes, resto compactas */}
+              <div style={{ padding: '0 18px' }}>
+                {baseFiltered.length === 0 && (
+                  <div style={{ textAlign: 'center', padding: '36px 14px', background: 'white', borderRadius: 16, boxShadow: '0 1px 4px rgba(31,78,92,0.07)' }}>
+                    <div style={{ fontSize: 40, marginBottom: 12 }}>🏛️</div>
+                    <div style={{ fontFamily: 'Georgia, serif', fontSize: 20, fontWeight: 600, color: '#1F4E5C', marginBottom: 10 }}>{t.emptyTitle}</div>
+                    <div style={{ fontSize: 14.5, color: '#57534e', lineHeight: 1.55, maxWidth: 300, margin: '0 auto' }}>{t.emptyText}</div>
+                  </div>
+                )}
+                {baseFiltered.slice(0, 2).map(ev => (
+                  <div key={ev.id} onClick={() => setOpenId(ev.id)} style={{ cursor: 'pointer' }}>
+                    <EventCard ev={ev} lang={lang} t={t} cat={CATS[ev.cat]} fromStation={fromStation}
+                      isFavorite={favorites.includes(ev.id)} onToggleFavorite={toggleFavorite} onOpenLightbox={setLightboxSrc} />
+                  </div>
+                ))}
+                {baseFiltered.slice(2).map(ev => (
+                  <EventRow key={ev.id} ev={ev} lang={lang} t={t} cat={CATS[ev.cat]} onOpen={setOpenId} isFavorite={favorites.includes(ev.id)} />
+                ))}
+              </div>
+            </>
+          )}
+
+          {section === 'favorites' && (
+            <div style={{ padding: '18px 18px 0 18px' }}>
+              {favoriteEvents.length === 0 ? (
+                <div style={{ textAlign: 'center', padding: '60px 20px', color: '#8a8378', fontSize: 14.5 }}>{t.noFavs}</div>
+              ) : (
+                <>
+                  {favoriteEvents.slice(0, 2).map(ev => (
+                    <div key={ev.id} onClick={() => setOpenId(ev.id)} style={{ cursor: 'pointer' }}>
+                      <EventCard ev={ev} lang={lang} t={t} cat={CATS[ev.cat]} fromStation={fromStation}
+                        isFavorite={true} onToggleFavorite={toggleFavorite} onOpenLightbox={setLightboxSrc} />
+                    </div>
+                  ))}
+                  {favoriteEvents.slice(2).map(ev => (
+                    <EventRow key={ev.id} ev={ev} lang={lang} t={t} cat={CATS[ev.cat]} onOpen={setOpenId} isFavorite={true} />
+                  ))}
+                </>
+              )}
             </div>
           )}
-          {filtered.map(ev => {
-            const cat = CATS[ev.cat];
-            return (
-              <div key={ev.id} style={{ background: 'white', marginBottom: 14, borderRadius: 18, overflow: 'hidden', boxShadow: '0 2px 10px rgba(31,78,92,0.10)', opacity: ev.isPast ? 0.6 : 1 }}>
-                <EventImage ev={ev} cat={cat} />
-                <div style={{ padding: '16px 18px 18px 18px' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 6 }}>
-                    <div style={{ fontSize: 12, fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', color: cat.text, background: cat.chip, padding: '4px 10px', borderRadius: 10 }}>{cat.label[lang]}</div>
-                    <div style={{ fontSize: 12, fontWeight: 800, padding: '4px 10px', borderRadius: 10, background: ev.isPast ? '#e5e1d6' : '#e2f0e9', color: ev.isPast ? '#8a8378' : '#2f6d52', whiteSpace: 'nowrap' }}>
-                      {ev.isPast ? t.past : t.free}
-                    </div>
-                  </div>
-                  <div style={{ fontFamily: '"Cormorant Garamond", Georgia, serif', fontStyle: 'italic', fontSize: 25, fontWeight: 600, color: '#1F4E5C', lineHeight: 1.15, marginBottom: 8 }}>{ev.name[lang]}</div>
-                  <div style={{ fontSize: 14.5, color: '#57534e', marginBottom: 12 }}>
-                    {formatDate(ev, lang)}
-                  </div>
-                  {ev.story && (
-                    <div style={{ borderLeft: '3px solid #E7B876', padding: '1px 0 1px 13px', marginBottom: 12 }}>
-                      <div style={{ fontSize: 14.5, color: '#3a362e', lineHeight: 1.6 }}>{ev.story[lang]}</div>
-                    </div>
-                  )}
-                  {ev.address && (
-                    <div style={{ fontSize: 13, color: '#8a8378', marginBottom: 14 }}>{ev.address}</div>
-                  )}
-                  {!ev.isPast && (
-                    <a href={mapsUrl(STATIONS[fromStation].query, ev.address || ev.loc)} target="_blank" rel="noopener noreferrer"
-                      style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 13.5, fontWeight: 700, color: '#F7F3EA', textDecoration: 'none', background: '#1F4E5C', borderRadius: 13, padding: '9px 14px' }}>
-                      {t.route} {STATIONS[fromStation].label} →
-                    </a>
-                  )}
-                </div>
-              </div>
-            );
-          })}
         </div>
+
+        {/* BOTTOM NAV */}
+        <div style={{ position: 'sticky', bottom: 0, background: 'white', display: 'flex', justifyContent: 'space-around', padding: '12px 0 10px 0', borderTop: '1px solid #eee' }}>
+          {[['home', '🏠', t.navHome], ['favorites', '❤️', t.navFav]].map(([key, icon, label]) => (
+            <button key={key} onClick={() => setSection(key)}
+              style={{ background: 'none', border: 'none', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3, fontSize: 10, fontWeight: 700, cursor: 'pointer', color: section === key ? '#1F4E5C' : '#b0aca0' }}>
+              <span style={{ fontSize: 18 }}>{icon}</span>{label}
+            </button>
+          ))}
+        </div>
+
+        {/* DETAIL MODAL */}
+        {openEvent && (
+          <div style={{ position: 'absolute', inset: 0, background: 'rgba(15,30,38,0.55)', zIndex: 50, display: 'flex', alignItems: 'flex-end' }} onClick={() => setOpenId(null)}>
+            <div onClick={e => e.stopPropagation()} style={{ background: '#E8E3D9', width: '100%', maxHeight: '88%', overflowY: 'auto', borderRadius: '22px 22px 0 0', position: 'relative' }}>
+              <button onClick={() => setOpenId(null)}
+                style={{ position: 'absolute', top: 14, right: 14, zIndex: 5, width: 34, height: 34, borderRadius: 17, border: 'none', background: 'rgba(15,30,38,0.55)', color: 'white', fontSize: 18, cursor: 'pointer' }}>✕</button>
+              <div style={{ padding: 14 }}>
+                <EventCard ev={openEvent} lang={lang} t={t} cat={CATS[openEvent.cat]} fromStation={fromStation}
+                  isFavorite={favorites.includes(openEvent.id)} onToggleFavorite={toggleFavorite} onOpenLightbox={setLightboxSrc} />
+              </div>
+            </div>
+          </div>
+        )}
+
+        <Lightbox src={lightboxSrc} onClose={() => setLightboxSrc(null)} />
 
       </div>
     </div>
