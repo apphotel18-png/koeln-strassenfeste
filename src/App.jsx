@@ -1385,8 +1385,6 @@ export default function App() {
   const [fromStation, setFromStation] = useState('hbf');
   const [section, setSection] = useState('home');
   const [favorites, setFavorites] = useState([]);
-  const [openId, setOpenId] = useState(null);
-  const [lightboxSrc, setLightboxSrc] = useState(null);
   const t = T[lang];
 
   React.useEffect(() => {
@@ -1415,7 +1413,6 @@ export default function App() {
   }, [tab, EVENTS_COMPUTED]);
 
   const favoriteEvents = useMemo(() => EVENTS_COMPUTED.filter(e => favorites.includes(e.id)), [favorites, EVENTS_COMPUTED]);
-  const openEvent = useMemo(() => EVENTS_COMPUTED.find(e => e.id === openId) || null, [openId, EVENTS_COMPUTED]);
 
   return (
     <div style={{ minHeight: '100vh', background: '#E8E3D9', fontFamily: '-apple-system, "Helvetica Neue", Arial, sans-serif' }}>
@@ -1469,7 +1466,7 @@ export default function App() {
                 ))}
               </div>
 
-              {/* EVENT LIST: primeras 2 grandes, resto compactas */}
+              {/* EVENT LIST: todas las tarjetas completas */}
               <div style={{ padding: '0 18px' }}>
                 {baseFiltered.length === 0 && (
                   <div style={{ textAlign: 'center', padding: '36px 14px', background: 'white', borderRadius: 16, boxShadow: '0 1px 4px rgba(31,78,92,0.07)' }}>
@@ -1478,14 +1475,9 @@ export default function App() {
                     <div style={{ fontSize: 14.5, color: '#57534e', lineHeight: 1.55, maxWidth: 300, margin: '0 auto' }}>{t.emptyText}</div>
                   </div>
                 )}
-                {baseFiltered.slice(0, 2).map(ev => (
-                  <div key={ev.id} onClick={() => setOpenId(ev.id)} style={{ cursor: 'pointer' }}>
-                    <EventCard ev={ev} lang={lang} t={t} cat={CATS[ev.cat]} fromStation={fromStation}
-                      isFavorite={favorites.includes(ev.id)} onToggleFavorite={toggleFavorite} onOpenLightbox={setLightboxSrc} />
-                  </div>
-                ))}
-                {baseFiltered.slice(2).map(ev => (
-                  <EventRow key={ev.id} ev={ev} lang={lang} t={t} cat={CATS[ev.cat]} onOpen={setOpenId} isFavorite={favorites.includes(ev.id)} />
+                {baseFiltered.map(ev => (
+                  <EventCard key={ev.id} ev={ev} lang={lang} t={t} cat={CATS[ev.cat]} fromStation={fromStation}
+                    isFavorite={favorites.includes(ev.id)} onToggleFavorite={toggleFavorite} />
                 ))}
               </div>
             </>
@@ -1496,17 +1488,10 @@ export default function App() {
               {favoriteEvents.length === 0 ? (
                 <div style={{ textAlign: 'center', padding: '60px 20px', color: '#8a8378', fontSize: 14.5 }}>{t.noFavs}</div>
               ) : (
-                <>
-                  {favoriteEvents.slice(0, 2).map(ev => (
-                    <div key={ev.id} onClick={() => setOpenId(ev.id)} style={{ cursor: 'pointer' }}>
-                      <EventCard ev={ev} lang={lang} t={t} cat={CATS[ev.cat]} fromStation={fromStation}
-                        isFavorite={true} onToggleFavorite={toggleFavorite} onOpenLightbox={setLightboxSrc} />
-                    </div>
-                  ))}
-                  {favoriteEvents.slice(2).map(ev => (
-                    <EventRow key={ev.id} ev={ev} lang={lang} t={t} cat={CATS[ev.cat]} onOpen={setOpenId} isFavorite={true} />
-                  ))}
-                </>
+                favoriteEvents.map(ev => (
+                  <EventCard key={ev.id} ev={ev} lang={lang} t={t} cat={CATS[ev.cat]} fromStation={fromStation}
+                    isFavorite={true} onToggleFavorite={toggleFavorite} />
+                ))
               )}
             </div>
           )}
@@ -1521,22 +1506,6 @@ export default function App() {
             </button>
           ))}
         </div>
-
-        {/* DETAIL MODAL */}
-        {openEvent && (
-          <div style={{ position: 'absolute', inset: 0, background: 'rgba(15,30,38,0.55)', zIndex: 50, display: 'flex', alignItems: 'flex-end' }} onClick={() => setOpenId(null)}>
-            <div onClick={e => e.stopPropagation()} style={{ background: '#E8E3D9', width: '100%', maxHeight: '88%', overflowY: 'auto', borderRadius: '22px 22px 0 0', position: 'relative' }}>
-              <button onClick={() => setOpenId(null)}
-                style={{ position: 'absolute', top: 14, right: 14, zIndex: 5, width: 34, height: 34, borderRadius: 17, border: 'none', background: 'rgba(15,30,38,0.55)', color: 'white', fontSize: 18, cursor: 'pointer' }}>✕</button>
-              <div style={{ padding: 14 }}>
-                <EventCard ev={openEvent} lang={lang} t={t} cat={CATS[openEvent.cat]} fromStation={fromStation}
-                  isFavorite={favorites.includes(openEvent.id)} onToggleFavorite={toggleFavorite} onOpenLightbox={setLightboxSrc} />
-              </div>
-            </div>
-          </div>
-        )}
-
-        <Lightbox src={lightboxSrc} onClose={() => setLightboxSrc(null)} />
 
       </div>
     </div>
